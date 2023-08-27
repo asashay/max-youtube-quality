@@ -2,10 +2,12 @@
     "compilerOptions": {
         "baseUrl": "./",
         "paths": {
-            "@src/*": ["src/*"]
+            "@src/*": [
+                "src/*"
+            ]
         },
-        "target": "es5",
-        "module": "commonjs",
+        "target": "ESNext",
+        "module": "ESNext",
         "moduleResolution": "node",
         "rootDir": "./src",
         "outDir": "dist/js",
@@ -13,7 +15,10 @@
         "sourceMap": true,
         "jsx": "react",
         "esModuleInterop": true,
-        "lib": ["es2015", "dom"],
+        "lib": [
+            "es2015",
+            "dom"
+        ],
         "experimentalDecorators": true,
         "allowSyntheticDefaultImports": true
     }
