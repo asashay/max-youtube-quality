@@ -23,8 +23,11 @@ let changedQuality = false;
 
 async function changeQuality() {
     const response = await browser.storage.local.get(["isTurnedOn"]);
-    if (response.isTurnedOn == null || !response.isTurnedOn || changedQuality)
-        return;
+    const ads = getSingleElementByXpath(
+        '//*[contains(@id, "simple-ad-badge") and contains(text(), "Ad ")]',
+    );
+
+    if (!response.isTurnedOn || changedQuality || ads != null) return;
     await timer(500);
 
     const settingsButton = document.querySelector(
@@ -49,6 +52,11 @@ async function changeQuality() {
 }
 
 async function start() {
+    const response = await browser.storage.local.get(["isTurnedOn"]);
+    if (response.isTurnedOn == null) {
+        await browser.storage.local.set({ isTurnedOn: true });
+    }
+
     setInterval(async () => {
         if (window.location.href != oldURL) {
             oldURL = window.location.href;
