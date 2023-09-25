@@ -1,5 +1,5 @@
 {
-    "name": "react-typescript-chrome-extension-starter",
+    "name": "automax-youtube-quality",
     "version": "2.0.0",
     "description": "Web Extension starter kit built with React, TypeScript, Tailwind CSS, EsLint, Prettier & Webpack",
     "main": "index.js",
@@ -12,10 +12,6 @@
         "storybook": "start-storybook -p 6006",
         "build-storybook": "build-storybook"
     },
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/aeksco/react-typescript-chrome-extension-starter.git"
-    },
     "keywords": [
         "react",
         "typescript",
@@ -23,12 +19,8 @@
         "extension",
         "boilerplate"
     ],
-    "author": "Alexander Schwartzberg",
+    "author": "Alex Oliynyk",
     "license": "MIT",
-    "bugs": {
-        "url": "https://github.com/aeksco/react-typescript-chrome-extension-starter/issues"
-    },
-    "homepage": "https://github.com/aeksco/react-typescript-chrome-extension-starter#readme",
     "devDependencies": {
         "@babel/core": "^7.11.6",
         "@babel/preset-env": "^7.11.5",
