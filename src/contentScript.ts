@@ -33,6 +33,11 @@ async function changeQuality() {
     const settingsButton = document.querySelector(
         ".ytp-settings-button",
     ) as HTMLButtonElement;
+
+    // check if settings button is visible
+    if (settingsButton.offsetHeight === 0 || settingsButton.offsetWidth === 0)
+        return;
+
     settingsButton?.click();
 
     const qualityMenu = getSingleElementByXpath(
