@@ -3,7 +3,7 @@
     "manifest_version": 3,
     "name": "AutoMax YouTube Quality",
     "description": "Web Extension to automatically maximize YouTube video quality",
-    "version": "1.0.2",
+    "version": "1.0.3",
     "action": {
         "default_icon": {
             "16": "icon-16.png",

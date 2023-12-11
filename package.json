@@ -1,6 +1,6 @@
 {
     "name": "automax-youtube-quality",
-    "version": "2.0.0",
+    "version": "1.0.3",
     "description": "Web Extension starter kit built with React, TypeScript, Tailwind CSS, EsLint, Prettier & Webpack",
     "main": "index.js",
     "scripts": {
