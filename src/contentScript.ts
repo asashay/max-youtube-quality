@@ -1,5 +1,4 @@
 import browser from "webextension-polyfill";
-console.log("Hello from content script!");
 
 const timer = async (timeout: number) => {
     await new Promise((resolve) => {
@@ -22,7 +21,10 @@ let oldURL = window.location.href;
 let changedQuality = false;
 
 async function changeQuality() {
-    const response = await browser.storage.local.get(["isTurnedOn"]);
+    const response = await browser.storage.local.get([
+        "isTurnedOn",
+        "isPaidUser",
+    ]);
     const ads = getSingleElementByXpath(
         '//*[contains(@id, "simple-ad-badge") and contains(text(), "Ad ")]',
     );
@@ -49,9 +51,22 @@ async function changeQuality() {
         ".ytp-quality-menu .ytp-panel-menu",
     ) as HTMLDivElement;
 
-    const qualityMenuItems = qualityMenuItemsContainer?.querySelectorAll("div");
+    const qualityMenuItems = qualityMenuItemsContainer?.querySelectorAll(
+        "div.ytp-menuitem",
+    ) as unknown as HTMLDivElement[];
+
     if (qualityMenuItems != null && qualityMenuItems.length > 0) {
-        qualityMenuItems[0].click();
+        if (response.isPaidUser) {
+            qualityMenuItems[0].click();
+        } else {
+            for (const qualityMenuItem of [...qualityMenuItems]) {
+                if (!qualityMenuItem.textContent?.includes("Premium")) {
+                    qualityMenuItem.click();
+                    break;
+                }
+            }
+        }
+
         changedQuality = true;
     }
 }
