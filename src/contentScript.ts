@@ -25,8 +25,8 @@ async function changeQuality() {
         "isTurnedOn",
         "isPaidUser",
     ]);
-    const ads = getSingleElementByXpath(
-        '//*[contains(@id, "simple-ad-badge") and contains(text(), "Ad ")]',
+    const ads = document.querySelector(".ytp-ad-player-overlay, .ytp-ad-message-container, #simple-ad-badge") || getSingleElementByXpath(
+        '//*[contains(@id, "simple-ad-badge")]',
     );
 
     if (!response.isTurnedOn || changedQuality || ads != null) return;
@@ -37,15 +37,38 @@ async function changeQuality() {
     ) as HTMLButtonElement;
 
     // check if settings button is visible
-    if (settingsButton.offsetHeight === 0 || settingsButton.offsetWidth === 0)
+    if (!settingsButton || settingsButton.offsetHeight === 0 || settingsButton.offsetWidth === 0)
         return;
 
-    settingsButton?.click();
+    // Only click if the menu is not already open to prevent looping
+    const isMenuOpen = settingsButton.getAttribute("aria-expanded") === "true";
+    if (!isMenuOpen) {
+        settingsButton.click();
+        await timer(200);
+    }
 
-    const qualityMenu = getSingleElementByXpath(
-        '//div[text()="Quality"]',
-    ) as HTMLDivElement;
-    qualityMenu?.click();
+    // Find the Quality menu item in a language-independent way
+    const menuItems = document.querySelectorAll(".ytp-menuitem");
+    let qualityMenu: HTMLDivElement | null = null;
+
+    for (const item of Array.from(menuItems) as HTMLDivElement[]) {
+        const label = item.querySelector(".ytp-menuitem-label")?.textContent;
+        const content = item.querySelector(".ytp-menuitem-content")?.textContent;
+        const hasQualityIcon = item.querySelector('path[d*="M15,17h-2v-3h2V17z"]');
+
+        if (
+            label === "Quality" ||
+            hasQualityIcon ||
+            (content && /^\d+p|Auto/.test(content))
+        ) {
+            qualityMenu = item;
+            break;
+        }
+    }
+
+    if (!qualityMenu) return;
+    qualityMenu.click();
+    await timer(100);
 
     const qualityMenuItemsContainer = document.querySelector(
         ".ytp-quality-menu .ytp-panel-menu",
