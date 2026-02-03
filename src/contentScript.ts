@@ -17,19 +17,98 @@ const getSingleElementByXpath = (path: string): Node | null => {
 };
 // todo: test for not premium user with ads
 
+const QUALITY_TRANSLATIONS = [
+    "Quality",
+    "Gehalte",
+    "Keyfiyyət",
+    "Kualitas",
+    "Kualiti",
+    "Kvalitet",
+    "Qualitat",
+    "Kvalita",
+    "Qualität",
+    "Kvaliteet",
+    "Calidad",
+    "Kalitate",
+    "Kalidad",
+    "Qualité",
+    "Calidade",
+    "Kvaliteta",
+    "Ikhwalithi",
+    "Gæði",
+    "Qualità",
+    "Ubora",
+    "Kvalitāte",
+    "Kokybė",
+    "Minőség",
+    "Sifat",
+    "Jakość",
+    "Qualidade",
+    "Calitate",
+    "Cilësi",
+    "Kakovost",
+    "Laatu",
+    "Chất lượng",
+    "Kalite",
+    "Якасць",
+    "Качество",
+    "Сапат",
+    "Сапа",
+    "Квалитет",
+    "Чанар",
+    "Якість",
+    "Ποιότητα",
+    "איכות",
+    "معیار",
+    "الجودة",
+    "کیفیت",
+    "गुणस्तर",
+    "गुणवत्ता",
+    "গুণমান",
+    "ਗੁਣਵੱਤਾ",
+    "ગુણવત્તા",
+    "ଗୁଣମାନ",
+    "தரம்",
+    "నాణ్యత",
+    "ಗುಣಮಟ್ಟ",
+    "ഗുണമേന്മ",
+    "ගුණාත්මකභාවය",
+    "คุณภาพ",
+    "ຄຸນນະພາບ",
+    "အရည်အသွေး",
+    "ხარისხი",
+    "ጥራት",
+    "គុណភាព",
+    "画质",
+    "畫質",
+    "画質",
+    "화질",
+    "Որակ",
+];
+
 let oldURL = window.location.href;
 let changedQuality = false;
+let settingsButtonClicked = false;
 
 async function changeQuality() {
     const response = await browser.storage.local.get([
         "isTurnedOn",
         "isPaidUser",
     ]);
-    const ads = getSingleElementByXpath(
-        '//*[contains(@id, "simple-ad-badge") and contains(text(), "Ad ")]',
-    );
+    const ads =
+        document.querySelector(".ad-showing") ||
+        document.querySelector('[class*="ad-showing"]') ||
+        document.querySelector('[class*="ytp-ad-"][class*="overlay"]') ||
+        document.querySelector('[class*="ad-skip"]') ||
+        document.querySelector(".video-ads [class*='ytp-ad']");
 
-    if (!response.isTurnedOn || changedQuality || ads != null) return;
+    if (
+        !response.isTurnedOn ||
+        changedQuality ||
+        ads != null ||
+        settingsButtonClicked
+    )
+        return;
     await timer(500);
 
     const settingsButton = document.querySelector(
@@ -41,9 +120,13 @@ async function changeQuality() {
         return;
 
     settingsButton?.click();
+    settingsButtonClicked = true;
 
+    const qualityXPath = QUALITY_TRANSLATIONS.map((t) => `text()="${t}"`).join(
+        " or ",
+    );
     const qualityMenu = getSingleElementByXpath(
-        '//div[text()="Quality"]',
+        `//div[${qualityXPath}]`,
     ) as HTMLDivElement;
     qualityMenu?.click();
 
@@ -81,6 +164,7 @@ async function start() {
         if (window.location.href != oldURL) {
             oldURL = window.location.href;
             changedQuality = false;
+            settingsButtonClicked = false;
         }
         if (!changedQuality) {
             await changeQuality();
